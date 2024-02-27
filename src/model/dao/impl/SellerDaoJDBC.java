@@ -103,7 +103,18 @@ public class SellerDaoJDBC implements SellerDao{
 
 	@Override
 	public void deleteById(Integer id) {
-		// TODO Auto-generated method stub
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement("DELETE FROM seller WHERE id = ?");
+			st.setInt(1, id);
+			st.executeUpdate();
+		}
+		catch (SQLException e){
+			throw new DbException(e.getMessage());			
+		}
+		finally {
+			DB.closeStatement(st);
+		}
 		
 	}
 
@@ -146,14 +157,12 @@ public class SellerDaoJDBC implements SellerDao{
 		return obj;
 	}
 
-
 	private Department instantiateDepartment(ResultSet rs) throws SQLException {
 		Department dep = new Department();
 		dep.setId(rs.getInt("DepartmentId"));
 		dep.setName(rs.getString("DepName"));
 		return dep;
 	}
-
 
 	@Override
 	public List<Seller> findAll() {
